@@ -9,4 +9,7 @@ def api_call(query_params):
     return response if response.status_code == 200 else None
 
 def JSONite(response):
+    if response is None:
+        return None
+        
     return json.loads(response.text)
