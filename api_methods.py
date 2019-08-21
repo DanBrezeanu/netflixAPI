@@ -1,9 +1,11 @@
 import settings
 from base import JSONite, api_call
 from models.NetflixTitle import NetflixTitle
+from models.NetflixDatabase import NetflixDatabase
+import os
 
 def new_releases(days_to_query = 7):
-    options = {'q' : 'get:new' + days_to_query + ':'+ settings.COUNTRY_CODE, 'p' : '1', 't' : 'ns', 'st' : 'adv'}
+    options = {'q' : 'get:new' + str(days_to_query) + ':'+ settings.COUNTRY_CODE, 'p' : '1', 't' : 'ns', 'st' : 'adv'}
 
     response = JSONite(api_call(options))
     if response is None:
@@ -41,8 +43,7 @@ def genres_list():
 
     return netflix_genres
 
-def advanced_search(start_imdb_rating = '0', sort_by = 'Relevance', start_year = '1900',
-                    genre_id = '0'):
+def advanced_search(start_imdb_rating = '0', sort_by = 'Relevance', start_year = '1900', genre_id = '0'):
     start_netflix_rating = '0'
     end_netflix_rating = '5'
     end_imdb_rating = '10'
@@ -79,8 +80,9 @@ def advanced_search(start_imdb_rating = '0', sort_by = 'Relevance', start_year =
                 }
 
     response = JSONite(api_call(options))
-    print(response)
+    for title in response['ITEMS']:
+        print(NetflixTitle(title))
 
 
 if __name__ == '__main__':
-    advanced_search()
+    database = NetflixDatabase.getInstance()
