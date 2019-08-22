@@ -1,6 +1,7 @@
 import settings
 import requests
 import json
+from sys import stderr
 
 def api_call(query_params):
     headers = dict((settings.HEADER_HOST, settings.HEADER_KEY))
@@ -11,5 +12,8 @@ def api_call(query_params):
 def JSONite(response):
     if response is None:
         return None
-        
+
     return json.loads(response.text)
+
+def log_error(message):
+    print(message, file=stderr)

@@ -9,3 +9,6 @@ HEADER_KEY  = ('x-rapidapi-key', open(API_KEY_FILE, 'r').read().strip())
 COUNTRY_CODE = 'RO'
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
+RESPONSES_PER_PAGE = 100
+
+DATABASE_TABLE_SEP = '######'
