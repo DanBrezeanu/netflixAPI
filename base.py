@@ -1,11 +1,11 @@
-import settings
+from settings import HEADER_KEY, HEADER_HOST, API_URL
 import requests
 import json
 from sys import stderr
 
 def api_call(query_params):
-    headers = dict((settings.HEADER_HOST, settings.HEADER_KEY))
-    response = requests.request("GET", settings.API_URL, headers = headers, params = query_params)
+    headers = dict((HEADER_HOST, HEADER_KEY))
+    response = requests.request("GET", API_URL, headers = headers, params = query_params)
 
     return response if response.status_code == 200 else None
 
