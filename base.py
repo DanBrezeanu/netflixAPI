@@ -1,8 +1,9 @@
-from settings import HEADER_KEY, HEADER_HOST, API_URL
+from settings import HEADER_KEY, HEADER_HOST, API_URL, CACHE_FILE
 from models.CacheManager import CacheManager
 import requests
 import json
 from sys import stderr
+import os
 
 def api_call(query_params):
     cache = CacheManager.getInstance()
@@ -30,3 +31,6 @@ def log_error(message):
 
 def request_log(function, progress, total):
     print("[REQUEST] [{}] {}/{} received".format(function.f_code.co_name, progress, total))
+
+def clear_cache():
+    os.remove(CACHE_FILE)

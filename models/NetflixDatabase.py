@@ -4,6 +4,7 @@ from datetime import datetime
 from settings import PROJECT_ROOT, DATABASE_TABLE_SEP, DB_SEP
 from base import log_error
 
+
 class NetflixDatabase(object):
     __instance = None
 
@@ -12,6 +13,7 @@ class NetflixDatabase(object):
         if NetflixDatabase.__instance is None:
             NetflixDatabase()
         return NetflixDatabase.__instance
+
 
     def __init__(self):
         if NetflixDatabase.__instance is None:
@@ -22,6 +24,7 @@ class NetflixDatabase(object):
             self.__buildDatabaseFromFile()
         else:
             raise Exception('Multiple instances created!')
+
 
     def __buildDatabaseFromFile(self):
         """
@@ -39,13 +42,16 @@ class NetflixDatabase(object):
             reading_titles = False if line == DATABASE_TABLE_SEP else True
             self.__read_title(line) if reading_titles else self.__read_genre(line)
 
+
     def __read_title(self, line):
         elements = line.split(DB_SEP)
         self.__entries.append(NetflixTitle(elements[:-1]))
 
+
     def __read_genre(self, line):
         elements = line.split(DB_SEP)
         self.__genres.append(NetflixGenre(elements))
+
 
     def addEntry(self, entry):
         if isinstance(entry, NetflixTitle):
@@ -54,6 +60,7 @@ class NetflixDatabase(object):
             self.__genres.append(entry)
         else:
             log_error('[QUERY]  Cannot add given entry to the database')
+
 
     def removeEntry(self, entry):
         try:
@@ -65,6 +72,8 @@ class NetflixDatabase(object):
             log_error("[QUERY]  Entry not present in the database")
 
 
+    def query(self, q):
+        pass
 
     def saveDatabaseToFile(self):
         with open(self.__file, 'w') as f:
@@ -76,34 +85,88 @@ class NetflixDatabase(object):
                 f.write(genre.database_dump() + '\n')
 
 
+class Query(object):
+    def __init__(self, searchFor, netflixID = None, titleMatching = None, synopsisMatching = None,
+                 ratingMin = None, released = None, runtimeMax = None, genreMatching = None,
+                 genreIDs = None):
+        self.searchFor        = searchFor
+        self.netflixID        = netflixID
+        self.titleMatching    = titleMatching
+        self.synopsisMatching = synopsisMatching
+        self.ratingMin        = ratingMin
+        self.released         = released
+        self.runtimeMax       = runtimeMax
+        self.genreMatching    = genreMatching
+        self.genreIDs         = genreIDs
 
+        self.ok = self.__sanityCheck()
 
+    def __sanityCheck(self):
+        ok = True
 
+        if self.searchFor != "title" and self.searchFor != "genre":
+            ok = False
+            log_error("[ERROR] You can only search for 'title' or 'genre'")
 
+        if self.netflixID is not None:
+            if isinstance(self.netflixID, list):
+                if not all(isinstance(x, str) for x in self.netflixID):
+                    log_error('[ERROR] netflixID elements must have str type')
+                    ok = False
+            elif not isinstance(self.netflixID, str):
+                    log_error('[ERROR] netflixID parameter must be either str or list')
+                    ok = False
 
+        if self.titleMatching is not None and not isinstance(self.titleMatching, str):
+            log_error('[ERROR] titleMatching parameter must be str')
+            ok = False
 
+        if self.synopsisMatching is not None and not isinstance(self.synopsisMatching, str):
+            log_error('[ERROR] synopsisMatching parameter must be str')
+            ok = False
 
+        if self.ratingMin is not None:
+            if not isinstance(self.ratingMin, int) and not isinstance(self.rating, float):
+                log_error('[ERROR] ratingMin parameter must be either int or float')
+                ok = False
+            elif float(self.ratingMin) < 0.0 or float(self.ratingMin) > 10.0:
+                log_error('[ERROR] ratingMin parameter must have values between 0 and 10')
+                ok = False
+            else:
+                self.ratingMin = float(self.ratingMin)
 
+        if self.released is not None:
+            try:
+                self.released = int(self.released)
+            except ValueError:
+                log_error('[ERROR] wrong format for released parameter, must be int or str')
+                ok = False
 
+        if self.runtimeMax is not None:
+            if 'h' in self.runtimeMax and 'm' in self.runtimeMax:
+                try:
+                    int(self.runtimeMax.split('h')[0])
+                    int(self.runtimeMax.split('h')[-1].split('m')[0])
+                except ValueError:
+                    log_error('[ERROR] Wrong format for runtimeMax, must be "<nhours>h<nminutes>m"')
+                    ok = False
+            elif 'm' in self.runtimeMax:
+                try:
+                    int(self.runtimeMax.split('m')[0])
+                except ValueError:
+                    log_error('[ERROR] Wrong format for runtimeMax, must be "<nhours>h<nminutes>m"')
+                    ok = False
 
+        if self.genreMatching is not None and not isinstance(self.genreMatching, str):
+            log_error('[ERROR] genreMatching parameter must be str')
+            ok = False
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        ##
+        if self.genreIDs is not None:
+            if isinstance(self.genreIDs, list):
+                if not all(isinstance(x, str) for x in self.genreIDs):
+                    log_error('[ERROR] genreIDs elements must have str type')
+                    ok = False
+            elif not isinstance(self.genreIDs, str):
+                    log_error('[ERROR] genreIDs parameter must be either str or list')
+                    ok = False
+        return ok

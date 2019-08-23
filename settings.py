@@ -1,5 +1,4 @@
 import os
-import sys
 
 API_KEY_FILE = 'api.key'
 
