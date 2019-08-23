@@ -17,3 +17,4 @@ DB_SEP = '|'
 VERBOSE = 1
 
 CACHE_FILE = '.requests_cache'
+CACHE_TTL = 86400 # 1 day
