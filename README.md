@@ -15,7 +15,7 @@ The project relies on the [*uNoGS* API](rapidapi.com/unogs/api/unogs).
 ### TODOs
 
 - [ ] Split the *advanced search* into multiple purpose methods
-- [ ] Cache API queries' reponses
+- [x] Cache API queries' reponses
 - [ ] Finish structuring the database
 - [ ] Create links between genres and titles
 - [ ] Optimize the database for the Basic billing plan
