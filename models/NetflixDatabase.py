@@ -1,7 +1,7 @@
 from models.NetflixTitle import NetflixTitle
 from models.NetflixGenre import NetflixGenre
 from datetime import datetime
-from settings import PROJECT_ROOT, DATABASE_TABLE_SEP
+from settings import PROJECT_ROOT, DATABASE_TABLE_SEP, DB_SEP
 from base import log_error
 
 class NetflixDatabase(object):
@@ -40,11 +40,11 @@ class NetflixDatabase(object):
             self.__read_title(line) if reading_titles else self.__read_genre(line)
 
     def __read_title(self, line):
-        elements = line.split('|')
+        elements = line.split(DB_SEP)
         self.__entries.append(NetflixTitle(elements[:-1]))
 
     def __read_genre(self, line):
-        elements = line.split('|')
+        elements = line.split(DB_SEP)
         self.__genres.append(NetflixGenre(elements))
 
     def addEntry(self, entry):

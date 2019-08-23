@@ -1,4 +1,5 @@
 import os
+import sys
 
 API_KEY_FILE = 'api.key'
 
@@ -12,3 +13,7 @@ PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 RESPONSES_PER_PAGE = 100
 
 DATABASE_TABLE_SEP = '######'
+DB_SEP = '|'
+VERBOSE = 1
+
+CACHE_FILE = '.requests_cache'
