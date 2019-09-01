@@ -1,7 +1,8 @@
 from settings import DB_SEP
 from typing import Union
+from NetflixDatabase import NetflixDatabaseEntry
 
-class NetflixTitle(object):
+class NetflixTitle(NetflixDatabaseEntry):
     def __init__(self, attrs: Union[dict, list]) -> None:
         if isinstance(attrs, dict):
             self.__initalizeFromDict(attrs)

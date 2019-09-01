@@ -1,6 +1,7 @@
 from settings import DB_SEP
+from NetflixDatabase import NetflixDatabaseEntry
 
-class NetflixGenre(object):
+class NetflixGenre(NetflixDatabaseEntry):
     def __init__(self, attrs: [str]) -> None:
         self.name, *self.netflixIDs = attrs
 

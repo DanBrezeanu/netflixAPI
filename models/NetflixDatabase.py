@@ -54,7 +54,7 @@ class NetflixDatabase(object):
         self.__genres.append(NetflixGenre(elements))
 
 
-    def addEntry(self, entry: 'NetflixTitle') -> None:
+    def addEntry(self, entry: 'NetflixDatabaseEntry') -> None:
         if isinstance(entry, NetflixTitle):
             self.__entries.append(entry)
         elif isinstance(entry, NetflixGenre):
@@ -63,7 +63,7 @@ class NetflixDatabase(object):
             log_error('[QUERY]  Cannot add given entry to the database')
 
 
-    def removeEntry(self, entry: 'NetflixTitle') -> None:
+    def removeEntry(self, entry: 'NetflixDatabaseEntry') -> None:
         try:
             if isinstance(entry, NetflixTitle):
                 self.__entries.remove(entry)
@@ -73,7 +73,7 @@ class NetflixDatabase(object):
             log_error("[QUERY]  Entry not present in the database")
 
 
-    def query(self, q: 'Query') -> [NetflixTitle]:
+    def query(self, q: 'Query') -> '[NetflixDatabaseEntry]':
         if not q.ok:
             return None
 
@@ -116,6 +116,9 @@ class NetflixDatabase(object):
             for genre in self.__genres:
                 f.write(genre.database_dump() + '\n')
 
+class NetflixDatabaseEntry(object):
+    def database_dump(self) -> str:
+        return ''
 
 class Query(object):
     def __init__(self, searchFor, netflixID = None, titleMatching = None, synopsisMatching = None,
