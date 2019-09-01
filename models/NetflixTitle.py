@@ -28,12 +28,18 @@ class NetflixTitle(object):
             self.runtime = attrs[4]
 
     def __str__(self):
-        return  ' Title: ' + self.title     + '\n' + \
-                ' ID   : ' + self.netflixID + '\n' + \
-                ' Image: ' + self.image     + '\n' + \
-                ' Syn  : ' + self.synopsis  + '\n' + \
-                ' Runtm: ' + self.runtime   + '\n' + \
-                ' Ratng: ' + self.rating    + '\n'
+        return  ' Title: ' + self.title       + '\n' + \
+                ' ID   : ' + self.netflixID   + '\n' + \
+                ' Image: ' + self.image       + '\n' + \
+                ' Syn  : ' + self.synopsis    + '\n' + \
+                ' Runtm: ' + self.runtime     + '\n' + \
+                ' Ratng: ' + str(self.rating) + '\n'
+
+    def __eq__(self, other):
+        if isinstance(other, NetflixTitle):
+            return self.netflixID == other.netflixID
+        elif isinstance(other, str):
+            return self.netflixID == other
 
     def database_dump(self):
         return DB_SEP.join([self.title, self.netflixID, self.image, self.synopsis, \

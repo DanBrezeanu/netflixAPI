@@ -19,6 +19,7 @@ class NetflixDatabase(object):
         if NetflixDatabase.__instance is None:
             NetflixDatabase.__instance = self
             self.__entries = []
+            self.__genres = []
             self.__file = PROJECT_ROOT + '/Database/database.netflix'
             self.__day_updated = None
             self.__buildDatabaseFromFile()
@@ -73,7 +74,33 @@ class NetflixDatabase(object):
 
 
     def query(self, q):
-        pass
+        if not q.ok:
+            return None
+
+        if q.searchFor == 'title':
+            return self.__queryTitles(q)
+        else:
+            return self.__queryGenres(q)
+
+    def __queryTitles(self, q):
+        queriedEntries = []
+
+        if q.netflixID is not None:
+            if isinstance(q.netflixID, list):
+                for entry in self.__entries:
+                    for queriedEntry in q.netflixID:
+                        if queriedEntry == entry:
+                            queriedEntries.append(entry)
+            else:
+                queriedEntries = [self.__entries[self.__entries.index(q.netflixID)]]
+        else:
+            queriedEntries = self.__entries.copy()
+
+        if q.ratingMin is not None:
+            queriedEntries = list(filter(lambda x: x.ratingMin >= q.ratingMin, queriedEntries))
+
+        if q.released is not None:
+            pass
 
     def saveDatabaseToFile(self):
         with open(self.__file, 'w') as f:
