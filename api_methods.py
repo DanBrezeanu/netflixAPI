@@ -4,7 +4,7 @@ from models.NetflixTitle import NetflixTitle
 import sys
 
 
-def new_releases(days_to_query=7):
+def new_releases(days_to_query: int =7) -> [NetflixTitle]:
     '''
     Queries the API for new releases for a given country
 
@@ -43,7 +43,7 @@ def new_releases(days_to_query=7):
     return netflix_titles
 
 
-def countries_list():
+def countries_list() -> [(str, str, str)]:
     '''
     Queries the API for countries available
 
@@ -71,7 +71,7 @@ def countries_list():
     return netflix_countries
 
 
-def genres_list():
+def genres_list() -> {str: [int]}:
     '''
     Queries the API for genres' IDs
 
@@ -98,7 +98,8 @@ def genres_list():
     return netflix_genres
 
 
-def advanced_search(start_imdb_rating='0', sort_by='Relevance', start_year='1900', genre_id='10673,10702,11804,11828,1192487,1365,1568,2125,2653,43040,43048,4344,46576,75418,76501,77232,788212,801362,852490,899,9584'):
+def advanced_search(start_imdb_rating: str ='0', sort_by: str ='Relevance', start_year: str ='1900',
+                    genre_id: str ='10673') -> [NetflixTitle]:
     #10673,10702,11804,11828,1192487,1365,1568,2125,2653,43040,43048,4344,46576,75418,76501,77232,788212,801362,852490,899,9584
     items_received = 0
     finished_pages = False

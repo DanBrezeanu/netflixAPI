@@ -9,13 +9,13 @@ class NetflixDatabase(object):
     __instance = None
 
     @staticmethod
-    def getInstance():
+    def getInstance() -> 'NetflixDatabase':
         if NetflixDatabase.__instance is None:
             NetflixDatabase()
         return NetflixDatabase.__instance
 
 
-    def __init__(self):
+    def __init__(self) -> None:
         if NetflixDatabase.__instance is None:
             NetflixDatabase.__instance = self
             self.__entries = []
@@ -27,7 +27,7 @@ class NetflixDatabase(object):
             raise Exception('Multiple instances created!')
 
 
-    def __buildDatabaseFromFile(self):
+    def __buildDatabaseFromFile(self) -> None:
         """
         title | netid | imagelink | synopsis | runtime | rating | type | released | genres
         """
@@ -44,17 +44,17 @@ class NetflixDatabase(object):
             self.__read_title(line) if reading_titles else self.__read_genre(line)
 
 
-    def __read_title(self, line):
+    def __read_title(self, line: str) -> None:
         elements = line.split(DB_SEP)
         self.__entries.append(NetflixTitle(elements[:-1]))
 
 
-    def __read_genre(self, line):
+    def __read_genre(self, line: str) -> None:
         elements = line.split(DB_SEP)
         self.__genres.append(NetflixGenre(elements))
 
 
-    def addEntry(self, entry):
+    def addEntry(self, entry: 'NetflixTitle') -> None:
         if isinstance(entry, NetflixTitle):
             self.__entries.append(entry)
         elif isinstance(entry, NetflixGenre):
@@ -63,7 +63,7 @@ class NetflixDatabase(object):
             log_error('[QUERY]  Cannot add given entry to the database')
 
 
-    def removeEntry(self, entry):
+    def removeEntry(self, entry: 'NetflixTitle') -> None:
         try:
             if isinstance(entry, NetflixTitle):
                 self.__entries.remove(entry)
@@ -73,7 +73,7 @@ class NetflixDatabase(object):
             log_error("[QUERY]  Entry not present in the database")
 
 
-    def query(self, q):
+    def query(self, q: 'Query') -> [NetflixTitle]:
         if not q.ok:
             return None
 
@@ -82,7 +82,7 @@ class NetflixDatabase(object):
         else:
             return self.__queryGenres(q)
 
-    def __queryTitles(self, q):
+    def __queryTitles(self, q: 'Query') -> [NetflixTitle]:
         queriedEntries = []
 
         if q.netflixID is not None:
@@ -100,9 +100,14 @@ class NetflixDatabase(object):
             queriedEntries = list(filter(lambda x: x.ratingMin >= q.ratingMin, queriedEntries))
 
         if q.released is not None:
+            #TODO:
             pass
 
-    def saveDatabaseToFile(self):
+    def __queryGenres(self, q: 'Query') -> [NetflixGenre]:
+        # TODO:
+        pass
+
+    def saveDatabaseToFile(self) -> None:
         with open(self.__file, 'w') as f:
             f.write(str(datetime.now().strftime('%Y-%m-%d %H:%M:%S')) + '\n')
             for entry in self.__entries:
@@ -115,7 +120,7 @@ class NetflixDatabase(object):
 class Query(object):
     def __init__(self, searchFor, netflixID = None, titleMatching = None, synopsisMatching = None,
                  ratingMin = None, released = None, runtimeMax = None, genreMatching = None,
-                 genreIDs = None):
+                 genreIDs = None) -> None:
         self.searchFor        = searchFor
         self.netflixID        = netflixID
         self.titleMatching    = titleMatching
@@ -128,7 +133,7 @@ class Query(object):
 
         self.ok = self.__sanityCheck()
 
-    def __sanityCheck(self):
+    def __sanityCheck(self) -> bool:
         ok = True
 
         if self.searchFor != "title" and self.searchFor != "genre":

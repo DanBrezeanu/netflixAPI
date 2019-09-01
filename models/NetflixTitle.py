@@ -1,13 +1,14 @@
 from settings import DB_SEP
+from typing import Union
 
 class NetflixTitle(object):
-    def __init__(self, attrs):
+    def __init__(self, attrs: Union[dict, list]) -> None:
         if isinstance(attrs, dict):
             self.__initalizeFromDict(attrs)
         elif isinstance(attrs, list):
             self.__initalizeFromList(attrs)
 
-    def __initalizeFromDict(self, attrs):
+    def __initalizeFromDict(self, attrs: dict) -> None:
             self.netflixID = attrs['netflixid']
             self.title = attrs['title']
             self.image = attrs['image']
@@ -17,7 +18,7 @@ class NetflixTitle(object):
             self.year_released = attrs['released']
             self.runtime = attrs['runtime']
 
-    def __initalizeFromList(self, attrs):
+    def __initalizeFromList(self, attrs: list) -> None:
             self.netflixID = attrs[1]
             self.title = attrs[0]
             self.image = attrs[2]
@@ -41,7 +42,7 @@ class NetflixTitle(object):
         elif isinstance(other, str):
             return self.netflixID == other
 
-    def database_dump(self):
+    def database_dump(self) -> str:
         return DB_SEP.join([self.title, self.netflixID, self.image, self.synopsis, \
                             self.runtime, self.rating, self.type, self.year_released, '0'])
 
