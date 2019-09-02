@@ -2,7 +2,7 @@ from models.NetflixTitle import NetflixTitle
 from models.NetflixGenre import NetflixGenre
 from datetime import datetime
 from settings import PROJECT_ROOT, DATABASE_TABLE_SEP, DB_SEP
-from base import log_error
+from base import log_error, runtime_to_minutes
 
 
 class NetflixDatabase(object):
@@ -100,8 +100,19 @@ class NetflixDatabase(object):
             queriedEntries = list(filter(lambda x: x.ratingMin >= q.ratingMin, queriedEntries))
 
         if q.released is not None:
-            #TODO:
+            queriedEntries = list(filter(lambda x: int(x.released) >= int(q.released), queriedEntries))
+
+        if q.runtimeMax is not None:
+            queriedEntries = list(filter(lambda x: runtime_to_minutes(x.runtimeMax) >= runtime_to_minutes(q.runtimeMax)))
+
+        if q.titleMatching is not None:
             pass
+
+        if q.synopsisMatching is not None:
+            pass
+
+        
+
 
     def __queryGenres(self, q: 'Query') -> [NetflixGenre]:
         # TODO:
@@ -178,19 +189,7 @@ class Query(object):
                 ok = False
 
         if self.runtimeMax is not None:
-            if 'h' in self.runtimeMax and 'm' in self.runtimeMax:
-                try:
-                    int(self.runtimeMax.split('h')[0])
-                    int(self.runtimeMax.split('h')[-1].split('m')[0])
-                except ValueError:
-                    log_error('[ERROR] Wrong format for runtimeMax, must be "<nhours>h<nminutes>m"')
-                    ok = False
-            elif 'm' in self.runtimeMax:
-                try:
-                    int(self.runtimeMax.split('m')[0])
-                except ValueError:
-                    log_error('[ERROR] Wrong format for runtimeMax, must be "<nhours>h<nminutes>m"')
-                    ok = False
+            ok = False if runtime_to_minutes(self.runtimeMax) is None else ok
 
         if self.genreMatching is not None and not isinstance(self.genreMatching, str):
             log_error('[ERROR] genreMatching parameter must be str')

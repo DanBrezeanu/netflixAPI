@@ -1,5 +1,6 @@
 from settings import DB_SEP
 from typing import Union
+import html
 from NetflixDatabase import NetflixDatabaseEntry
 
 class NetflixTitle(NetflixDatabaseEntry):
@@ -11,9 +12,9 @@ class NetflixTitle(NetflixDatabaseEntry):
 
     def __initalizeFromDict(self, attrs: dict) -> None:
             self.netflixID = attrs['netflixid']
-            self.title = attrs['title']
+            self.title = html.unescape(attrs['title'])
             self.image = attrs['image']
-            self.synopsis = attrs['synopsis']
+            self.synopsis = html.unescape(attrs['synopsis'])
             self.rating = float(attrs['rating'])
             self.type = attrs['type']
             self.year_released = attrs['released']
@@ -21,9 +22,9 @@ class NetflixTitle(NetflixDatabaseEntry):
 
     def __initalizeFromList(self, attrs: list) -> None:
             self.netflixID = attrs[1]
-            self.title = attrs[0]
+            self.title = html.unescape(attrs[0])
             self.image = attrs[2]
-            self.synopsis = attrs[3]
+            self.synopsis = html.unescape(attrs[3])
             self.rating = float(attrs[5])
             self.type = attrs[6]
             self.year_released = attrs[7]

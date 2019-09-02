@@ -46,6 +46,25 @@ def JSONite(response: requests.models.Response) -> dict:
 
     return json.loads(response.text)
 
+def runtime_to_minutes(runtime: str) -> int:
+    '''
+    :param runtime: runtime of a given title
+    :type runtime: str
+
+    :returns: the number of minutes resulted from the given string
+    :rtype: int
+    '''
+    if 'h' in runtime and 'm' in runtime:
+        try:
+            return int(runtime.split('h')[0]) * 60 + int(runtime.split('h')[-1].split('m')[0])
+        except ValueError:
+            log_error('[ERROR] Wrong format for runtime, must be "<nhours>h<nminutes>m"')
+    elif 'm' in runtime:
+        try:
+            return int(runtime.split('m')[0])
+        except ValueError:
+            log_error('[ERROR] Wrong format for runtime, must be "<nhours>h<nminutes>m"')
+
 def log_error(message: dict) -> None:
     '''
     Prints eror message to stderr
